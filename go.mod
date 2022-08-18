@@ -56,6 +56,7 @@ require (
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/stretchr/testify v1.7.1 // indirect
 	github.com/subosito/gotenv v1.3.0 // indirect
+	github.com/tencentyun/scf-go-lib v0.0.0-20211123032342-f972dcd16ff6
 	github.com/ugorji/go/codec v1.2.7 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.4 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.4 // indirect
