@@ -2,10 +2,11 @@ package utils
 
 import (
 	"fmt"
-	"github.com/spf13/viper"
 	"os"
 	"reflect"
 	"strings"
+
+	"github.com/spf13/viper"
 )
 
 var Config *config
@@ -15,13 +16,16 @@ func init() {
 	Config = &config{}
 	Logger = &logger{
 		level: LevelInfo,
+		out:   os.Stdout,
 	}
 	err := ReadConfig()
 	if err != nil {
-		Logger.Error("Read config failed, err:", err)
+		Logger.Error("Read config failed, err:%s", err)
 		return
 	}
 	switch Config.RunConfig.LogLevel {
+	case "panic":
+		Logger.level = LevelPanic
 	case "debug":
 		Logger.level = LevelDebug
 	case "info":

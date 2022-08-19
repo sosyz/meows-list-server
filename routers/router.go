@@ -1,12 +1,24 @@
 package routers
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"sonui.cn/meows-list-server/routers/handler"
 )
 
 func InitRouter() *gin.Engine {
-	r := gin.Default()
+	r := gin.New()
+	r.Use(gin.LoggerWithFormatter(func(param gin.LogFormatterParams) string {
+		// 你的自定义格式
+		return fmt.Sprintf("%s [Info] Gin %s %s \"%s\" %s \n",
+			param.TimeStamp.Format("2006-01-02 15:04:05"),
+			param.ClientIP,
+			param.Method,
+			param.Path,
+			param.Request.Header.Get("User-Agent"),
+		)
+	}))
+	r.Use(gin.Recovery())
 	// r.Use(Cors())
 	//服务器状态检测
 	r.GET("/ping", func(context *gin.Context) {
