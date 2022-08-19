@@ -1,31 +1,18 @@
 package services
 
 import (
-	"github.com/gin-gonic/gin"
+	"errors"
+	"sonui.cn/meows-list-server/models"
 )
 
-type LoginParams struct {
-	Name   string `json:"name"`
-	Pass   string `json:"pass"`
-	Verify string `json:"verify"`
-}
+func UserLogin(email, password string) (string, error) {
+	user, err := models.GetUserByEmail(email)
+	if err != nil {
+		return "", errors.New("邮箱或密码错误")
+	}
+	if !models.CheckUserPassword(user, password) {
+		return "", errors.New("邮箱或密码错误")
+	}
 
-func Login(c *gin.Context) {
-
-}
-
-func Signup(c *gin.Context) {
-
-}
-
-func Info(c *gin.Context) {
-
-}
-
-func Update(c *gin.Context) {
-
-}
-
-func Quit(c *gin.Context) {
-
+	return "", nil
 }

@@ -2,7 +2,7 @@ package routers
 
 import (
 	"github.com/gin-gonic/gin"
-	"sonui.cn/meows-list-server/services"
+	"sonui.cn/meows-list-server/routers/handler"
 )
 
 func InitRouter() *gin.Engine {
@@ -19,15 +19,15 @@ func InitRouter() *gin.Engine {
 	user := v1.Group("/user")
 	{
 		// 登录
-		user.POST("login", services.Login)
+		user.POST("login", handler.UserLogin)
 		// 注册
-		user.POST("signup", services.Signup)
+		user.POST("signup", handler.Signup)
 		// 获取账号信息
-		user.GET("/:id/info", services.Info)
+		user.GET("/:id/info", handler.Info)
 		// 设置账号信息
-		user.PUT("set", services.Update)
+		user.PUT("set", handler.Update)
 		// 退出登录
-		user.POST("quit", services.Quit)
+		user.POST("quit", handler.Quit)
 	}
 	return r
 }
