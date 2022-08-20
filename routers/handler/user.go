@@ -13,15 +13,30 @@ func UserLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
-	if res, err := controller.UserLogin(c, &LoginParams); err != nil {
-		c.JSON(http.StatusOK, utils.ErrorResponse(err.Error()))
+	res, err := controller.UserLogin(c, &LoginParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
 	} else {
-		c.JSON(http.StatusOK, utils.SuccessResponse("", res))
+		c.Header("Content-Type", "application/json; charset=utf-8")
+		c.Status(http.StatusOK)
+		_, _ = c.Writer.WriteString(res)
 	}
 }
 
 func Signup(c *gin.Context) {
-
+	SignupParams := controller.SignupParams{}
+	if err := c.ShouldBind(&SignupParams); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
+		return
+	}
+	res, err := controller.UserSignup(c, &SignupParams)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
+	} else {
+		c.Header("Content-Type", "application/json; charset=utf-8")
+		c.Status(http.StatusOK)
+		_, _ = c.Writer.WriteString(res)
+	}
 }
 
 func Info(c *gin.Context) {

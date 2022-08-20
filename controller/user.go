@@ -3,34 +3,59 @@ package controller
 import (
 	"context"
 	"encoding/json"
-	"errors"
-	"github.com/astaxie/beego/validation"
 	"sonui.cn/meows-list-server/pkg/utils"
 	"sonui.cn/meows-list-server/services"
 )
 
 type LoginParams struct {
-	Name   string `form:"name" json:"name" valid:"Required; MaxSize(100)"`
+	Email  string `form:"email" json:"name" valid:"Required; MaxSize(100); Email"`
 	Pass   string `form:"password" json:"password" valid:"Required; MaxSize(100)"`
 	Verify string `form:"verify" json:"verify"`
 }
 
-func (l *LoginParams) Valid(v *validation.Validation) {
+type SignupParams struct {
+	Name  string `form:"name" json:"name" valid:"Required; MaxSize(100)"`
+	Pass  string `form:"password" json:"password" valid:"Required; MaxSize(100)"`
+	Email string `form:"email" json:"email" valid:"Required; MaxSize(100); Email"`
+	Phone string `form:"phone" json:"phone"`
+}
+
+type LoginResponse struct {
+	Token string `json:"token"`
+}
+
+type SignupResponse struct {
+	Message string `json:"message"`
 }
 
 func UserLogin(ctx context.Context, opt *LoginParams) (string, error) {
-	var (
-		ret string
-		err error
-	)
-	// 参数检查
 	if next, msg := utils.Validation(opt); !next {
-		err = errors.New(msg)
+		res, _ := json.Marshal(utils.ErrorResponse(msg))
+		return string(res), nil
 	} else {
-		var res interface{}
-		res, err = services.UserLogin(opt.Name, opt.Pass)
-		_json, _ := json.Marshal(res)
-		ret = string(_json)
+		if err := services.UserLogin(opt.Email, opt.Pass); err != nil {
+			res, _ := json.Marshal(utils.ErrorResponse(err.Error()))
+			return string(res), nil
+		}
+		res, _ := json.Marshal(utils.SuccessResponse("登录成功", LoginResponse{
+			Token: "",
+		}))
+		return string(res), nil
 	}
-	return ret, err
+}
+
+func UserSignup(ctx context.Context, opt *SignupParams) (string, error) {
+	if next, msg := utils.Validation(opt); !next {
+		res, _ := json.Marshal(utils.ErrorResponse(msg))
+		return string(res), nil
+	} else {
+		if err := services.UserSignup(opt.Name, opt.Pass, opt.Email, opt.Phone); err != nil {
+			res, _ := json.Marshal(utils.ErrorResponse(err.Error()))
+			return string(res), nil
+		}
+		res, _ := json.Marshal(utils.SuccessResponse("登录成功", SignupResponse{
+			Message: "注册成功",
+		}))
+		return string(res), nil
+	}
 }
