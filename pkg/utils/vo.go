@@ -1,27 +1,29 @@
 package utils
 
-type err struct {
+type all struct {
 	Success bool   `json:"success"`
 	Message string `json:"message"`
 }
+type err struct {
+	all
+}
 
 type success struct {
-	Success bool        `json:"success"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+	all
+	Data interface{} `json:"data"`
 }
 
 func ErrorResponse(message string) interface{} {
-	return err{
-		Success: false,
-		Message: message,
-	}
+	ret := err{}
+	ret.Success = false
+	ret.Message = message
+	return ret
 }
 
 func SuccessResponse(message string, data interface{}) interface{} {
-	return success{
-		Success: true,
-		Message: message,
-		Data:    data,
-	}
+	ret := success{}
+	ret.Success = true
+	ret.Message = message
+	ret.Data = data
+	return ret
 }
