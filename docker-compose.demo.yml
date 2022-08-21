@@ -1,7 +1,28 @@
 version: '3'
 services:
   db:
+    container_name: database
     image: postgres
     restart: always
     environment:
-      POSTGRES_PASSWORD: example
+      POSTGRES_PASSWORD: test
+#    ports:
+#      - "127.0.0.1:5432:5432"
+  redis:
+    container_name: redis
+    image: redis
+    restart: always
+#    ports:
+#      - "127.0.0.1:6379:6379"
+  minio:
+    container_name: minio
+    command:
+      - server
+      - /data
+    image: minio/minio
+    restart: always
+#    ports:
+#      - "127.0.0.1:9000:9000"
+    volumes:
+      - ./data/minio/data:/data
+      - ./data/minio/config:/root/.minio
