@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"encoding/json"
 	"sonui.cn/meows-list-server/pkg/utils"
 	"sonui.cn/meows-list-server/services"
 )
@@ -28,34 +27,29 @@ type SignupResponse struct {
 	Message string `json:"message"`
 }
 
-func UserLogin(ctx context.Context, opt *LoginParams) (string, error) {
+func UserLogin(ctx context.Context, opt *LoginParams) string {
 	if next, msg := utils.Validation(opt); !next {
-		res, _ := json.Marshal(utils.ErrorResponse(msg))
-		return string(res), nil
+		return utils.ErrorResponse(msg)
 	} else {
-		if err := services.UserLogin(opt.Email, opt.Pass); err != nil {
-			res, _ := json.Marshal(utils.ErrorResponse(err.Error()))
-			return string(res), nil
+		if token, err := services.UserLogin(opt.Email, opt.Pass); err != nil {
+			return utils.ErrorResponse(err.Error())
+		} else {
+			return utils.SuccessResponse("登录成功", LoginResponse{
+				Token: token,
+			})
 		}
-		res, _ := json.Marshal(utils.SuccessResponse("登录成功", LoginResponse{
-			Token: "",
-		}))
-		return string(res), nil
 	}
 }
 
-func UserSignup(ctx context.Context, opt *SignupParams) (string, error) {
+func UserSignup(ctx context.Context, opt *SignupParams) string {
 	if next, msg := utils.Validation(opt); !next {
-		res, _ := json.Marshal(utils.ErrorResponse(msg))
-		return string(res), nil
+		return utils.ErrorResponse(msg)
 	} else {
 		if err := services.UserSignup(opt.Name, opt.Pass, opt.Email, opt.Phone); err != nil {
-			res, _ := json.Marshal(utils.ErrorResponse(err.Error()))
-			return string(res), nil
+			return utils.ErrorResponse(err.Error())
 		}
-		res, _ := json.Marshal(utils.SuccessResponse("登录成功", SignupResponse{
+		return utils.SuccessResponse("登录成功", SignupResponse{
 			Message: "注册成功",
-		}))
-		return string(res), nil
+		})
 	}
 }
