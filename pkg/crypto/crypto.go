@@ -20,14 +20,14 @@ func RandString(n int) (string, error) {
 	return token, nil
 }
 
-func EncPassword(data []byte) ([]byte, error) {
-	ret, err := bcrypt.GenerateFromPassword(data, bcrypt.DefaultCost)
+func EncPassword(password string) (string, error) {
+	ret, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
-	return ret, nil
+	return string(ret), nil
 }
 
-func CheckPassword(data, hash []byte) bool {
-	return bcrypt.CompareHashAndPassword(hash, data) == nil
+func CheckPassword(password, hashPassword string) bool {
+	return bcrypt.CompareHashAndPassword([]byte(hashPassword), []byte(password)) == nil
 }
