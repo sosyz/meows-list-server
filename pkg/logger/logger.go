@@ -1,4 +1,4 @@
-package utils
+package logger
 
 import (
 	"fmt"
@@ -23,6 +23,26 @@ type logger struct {
 	mutex   sync.Mutex
 	errFile *os.File
 	out     io.Writer
+}
+
+var l logger
+
+func Init(level string) {
+	switch level {
+	case "panic":
+		l.level = LevelPanic
+	case "debug":
+		l.level = LevelDebug
+	case "info":
+		l.level = LevelInfo
+	case "warn":
+		l.level = LevelWaring
+	case "error":
+		l.level = LevelError
+	default:
+		l.level = LevelInfo
+	}
+	l.out = os.Stdout
 }
 
 func (l *logger) writeErrLog(msg string) {
@@ -56,43 +76,43 @@ func (l *logger) print(prefix, msg string) {
 	}
 }
 
-func (l *logger) Panic(msg string, v ...interface{}) {
+func Panic(msg string, v ...interface{}) {
 	if l.level < LevelPanic {
 		return
 	}
 	out := fmt.Sprintf(msg, v...)
-	l.print("Panic", out)
+	l.print("Panic ", out)
 	panic(out)
 }
 
-func (l *logger) Error(msg string, v ...interface{}) {
+func Error(msg string, v ...interface{}) {
 	if l.level < LevelError {
 		return
 	}
-	l.print("Error", fmt.Sprintf(msg, v...))
+	l.print("Error ", fmt.Sprintf(msg, v...))
 }
 
-func (l *logger) Waring(msg string, v ...interface{}) {
+func Waring(msg string, v ...interface{}) {
 	if l.level < LevelWaring {
 		return
 	}
 	l.print("Waring", fmt.Sprintf(msg, v...))
 }
 
-func (l *logger) Info(msg string, v ...interface{}) {
+func Info(msg string, v ...interface{}) {
 	if l.level < LevelInfo {
 		return
 	}
-	l.print("Info", fmt.Sprintf(msg, v...))
+	l.print("Info  ", fmt.Sprintf(msg, v...))
 }
 
-func (l *logger) Debug(msg string, v ...interface{}) {
+func Debug(msg string, v ...interface{}) {
 	if l.level < LevelDebug {
 		return
 	}
-	l.print("Debug", fmt.Sprintf(msg, v...))
+	l.print("Debug ", fmt.Sprintf(msg, v...))
 }
 
-func (l *logger) Write() io.Writer {
+func Write() io.Writer {
 	return l.out
 }

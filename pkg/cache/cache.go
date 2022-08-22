@@ -6,9 +6,9 @@ import (
 
 var cache *RedisStore
 
-func Init(address, password string, db int) {
+func Init(host, port, password string, db int) {
 	cache = NewRedisStore(
-		address,
+		host+":"+port,
 		password,
 		db,
 	)

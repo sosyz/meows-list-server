@@ -2,20 +2,23 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"sonui.cn/meows-list-server/pkg/utils"
+	"sonui.cn/meows-list-server/bootstrap"
+	"sonui.cn/meows-list-server/pkg/conf"
+	"sonui.cn/meows-list-server/pkg/logger"
 	"sonui.cn/meows-list-server/routers"
 )
 
 func main() {
 	// 定义日志输出
+	bootstrap.Init("./")
 
 	gin.DisableConsoleColor()
 	gin.SetMode(gin.ReleaseMode)
-	gin.DefaultWriter = utils.Logger.Write()
+	gin.DefaultWriter = logger.Write()
 	api := routers.InitRouter()
 
-	utils.Logger.Info("start meows-list-server listen on %s", utils.Config.RunConfig.Host+":"+utils.Config.RunConfig.Port)
-	if err := api.Run(utils.Config.RunConfig.Host + ":" + utils.Config.RunConfig.Port); err != nil {
-		utils.Logger.Panic("start meows-list-server error: %v", err)
+	logger.Info("start meows-list-server listen on %s", conf.Run.Host+":"+conf.Run.Port)
+	if err := api.Run(conf.Run.Host + ":" + conf.Run.Port); err != nil {
+		logger.Panic("start meows-list-server error: %v", err)
 	}
 }

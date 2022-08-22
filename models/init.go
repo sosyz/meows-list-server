@@ -2,12 +2,13 @@ package models
 
 import (
 	"fmt"
+	"sonui.cn/meows-list-server/pkg/conf"
+	"sonui.cn/meows-list-server/pkg/logger"
 	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/schema"
-	"sonui.cn/meows-list-server/pkg/utils"
 )
 
 var DB *gorm.DB
@@ -19,11 +20,11 @@ func init() {
 		err error
 	)
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai",
-		utils.Config.DataBaseConfig.Host,
-		utils.Config.DataBaseConfig.User,
-		utils.Config.DataBaseConfig.Password,
-		utils.Config.DataBaseConfig.Database,
-		utils.Config.DataBaseConfig.Port)
+		conf.Database.Host,
+		conf.Database.User,
+		conf.Database.Password,
+		conf.Database.Database,
+		conf.Database.Port)
 	db, err = gorm.Open(postgres.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix: "meows_",
@@ -31,13 +32,13 @@ func init() {
 	})
 
 	if err != nil {
-		utils.Logger.Panic("DateBase.init err:", err)
+		logger.Panic("DateBase.init err:", err)
 	}
 
 	//设置连接池
 	sqlDB, err := db.DB()
 	if err != nil {
-		utils.Logger.Panic("DateBase.init err:", err)
+		logger.Panic("DateBase.init err:", err)
 	}
 
 	sqlDB.SetMaxIdleConns(10)
@@ -47,7 +48,7 @@ func init() {
 	// 更新结构
 	err = db.AutoMigrate(&User{})
 	if err != nil {
-		utils.Logger.Panic("DateBase.init err:", err)
+		logger.Panic("DateBase.init err:", err)
 	}
 	DB = db
 }
