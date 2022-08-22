@@ -14,7 +14,7 @@ import (
 var DB *gorm.DB
 
 // Init 初始化连接
-func init() {
+func Init() {
 	var (
 		db  *gorm.DB
 		err error
