@@ -3,7 +3,6 @@ package models
 import (
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
-	"sonui.cn/meows-list-server/pkg/utils"
 )
 
 const (
@@ -32,17 +31,10 @@ func GetUserByEmail(email string) (*User, error) {
 	if err := DB.Where("email = ?", email).Limit(1).Find(&user).Error; err != nil {
 		return nil, err
 	}
-	utils.Logger.Debug("user: %v", user)
 	return &user, nil
 }
 
-func CheckUserPassword(user *User, password string) bool {
-	hashedPassword := []byte(user.Password)
-	err := bcrypt.CompareHashAndPassword(hashedPassword, []byte(password))
-	return err == nil
-}
-
-func SignUp(name, password, email, phone string) error {
+func CreateUser(name, password, email, phone string) error {
 	user := User{
 		Name:     name,
 		Password: password,
