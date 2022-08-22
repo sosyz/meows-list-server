@@ -2,44 +2,45 @@ package cache
 
 import (
 	"context"
-	"encoding/json"
 	"github.com/go-redis/redis/v8"
 	"time"
 )
 
+type RedisStore struct {
+	C *redis.Client
+}
+
 // NewRedisStore 创建新的redis存储
-func NewRedisStore(address, password string, database int) *redis.Client {
+func NewRedisStore(address, password string, database int) *RedisStore {
 	rdb := redis.NewClient(&redis.Options{
 		Addr:     address,
 		Password: password,
 		DB:       database,
 	})
-	return rdb
+	return &RedisStore{C: rdb}
 }
 
 // Set 存储值
-func Set(rdb *redis.Client, key string, value any, ttl int) error {
+func (r *RedisStore) Set(key string, value string, ttl int) error {
 	ctx := context.Background()
-	v, err := json.Marshal(value)
-	if err != nil {
-		return err
-	}
-	if err := rdb.Set(ctx, key, v, time.Duration(ttl)).Err(); err != nil {
-		return err
+	if ttl > 0 {
+		if err := r.C.Set(ctx, key, value, time.Duration(ttl)*time.Second).Err(); err != nil {
+			return err
+		}
+	} else {
+		if err := r.C.Set(ctx, key, value, 0).Err(); err != nil {
+			return err
+		}
 	}
 	return nil
 }
 
 // Get 取值
-func Get(rdb *redis.Client, key string, value any) error {
+func (r *RedisStore) Get(key string) (string, error) {
 	ctx := context.Background()
-	v, err := rdb.Get(ctx, key).Result()
+	v, err := r.C.Get(ctx, key).Result()
 	if err != nil {
-		return err
+		return "", err
 	}
-	err = json.Unmarshal([]byte(v), value)
-	if err != nil {
-		return err
-	}
-	return nil
+	return v, nil
 }
