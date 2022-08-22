@@ -13,14 +13,12 @@ func UserLogin(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
-	res, err := controller.UserLogin(c, &LoginParams)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
-	} else {
-		c.Header("Content-Type", "application/json; charset=utf-8")
-		c.Status(http.StatusOK)
-		_, _ = c.Writer.WriteString(res)
-	}
+	res := controller.UserLogin(c, &LoginParams)
+
+	c.Header("Content-Type", "application/json; charset=utf-8")
+	c.Status(http.StatusOK)
+	_, _ = c.Writer.WriteString(res)
+
 }
 
 func Signup(c *gin.Context) {
@@ -29,14 +27,11 @@ func Signup(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
-	res, err := controller.UserSignup(c, &SignupParams)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, utils.ErrorResponse(err.Error()))
-	} else {
-		c.Header("Content-Type", "application/json; charset=utf-8")
-		c.Status(http.StatusOK)
-		_, _ = c.Writer.WriteString(res)
-	}
+	res := controller.UserSignup(c, &SignupParams)
+
+	c.Header("Content-Type", "application/json; charset=utf-8")
+	c.Status(http.StatusOK)
+	_, _ = c.Writer.WriteString(res)
 }
 
 func Info(c *gin.Context) {
