@@ -9,7 +9,7 @@ import (
 	"strings"
 )
 
-type dataBase struct {
+type database struct {
 	Host     string
 	Port     string
 	User     string
@@ -31,22 +31,22 @@ type redis struct {
 }
 
 type config struct {
-	RunConfig      run
-	DataBaseConfig dataBase
-	RedisConfig    redis
+	Run      run
+	Database database
+	Redis    redis
 }
 
 var Run *run
-var Database *dataBase
+var Database *database
 var Redis *redis
-var conf *config
+var conf config
 
 func Init(path string) {
-	conf := config{}
 	ReadConfig(path)
-	Run = &conf.RunConfig
-	Database = &conf.DataBaseConfig
-	Redis = &conf.RedisConfig
+
+	Run = &conf.Run
+	Database = &conf.Database
+	Redis = &conf.Redis
 }
 
 func ReadConfig(path string) {
@@ -68,8 +68,10 @@ func ReadConfig(path string) {
 			logger.Error("Read config from env failed, err: %v", err)
 		}
 	} else {
-		if err := v.Unmarshal(conf); err != nil {
+		if err := v.Unmarshal(&conf); err != nil {
 			logger.Error("unmarshal config failed, err: %v", err)
+		} else {
+			logger.Debug("Read config from file success")
 		}
 	}
 }

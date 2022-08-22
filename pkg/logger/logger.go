@@ -45,6 +45,23 @@ func Init(level string) {
 	l.out = os.Stdout
 }
 
+func SetLevel(level string) {
+	switch level {
+	case "panic":
+		l.level = LevelPanic
+	case "debug":
+		l.level = LevelDebug
+	case "info":
+		l.level = LevelInfo
+	case "warn":
+		l.level = LevelWaring
+	case "error":
+		l.level = LevelError
+	default:
+		l.level = LevelInfo
+	}
+}
+
 func (l *logger) writeErrLog(msg string) {
 	if l.errFile == nil {
 		//	打开文件 不存在则创建
@@ -69,7 +86,7 @@ func (l *logger) print(prefix, msg string) {
 	}
 	// 取出文件名
 	fileName := strings.Split(file, "/")[len(strings.Split(file, "/"))-1]
-	out := fmt.Sprintf("%s [%s] %s %s\n", time.Now().Format("2006-01-02 15:04:05"), prefix, fileName, msg)
+	out := fmt.Sprintf("%s [%s] %s: %s\n", time.Now().Format("2006-01-02 15:04:05"), prefix, fileName, msg)
 	_, _ = l.out.Write([]byte(out))
 	if prefix == "Error" || prefix == "Panic" {
 		l.writeErrLog(stack + " " + out)
