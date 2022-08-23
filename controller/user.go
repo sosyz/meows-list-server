@@ -73,3 +73,13 @@ func UserInfo(ctx context.Context) string {
 		return utils.SuccessResponse("获取用户信息成功", user)
 	}
 }
+
+func UserLogout(ctx context.Context) string {
+	// 获取请求头中的token
+	token := ctx.Value("token").(string)
+	if err := services.RemoveToken(token); err != nil {
+		return utils.ErrorResponse(err.Error())
+	} else {
+		return utils.SuccessResponse("登出成功", "success")
+	}
+}

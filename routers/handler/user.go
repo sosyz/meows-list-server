@@ -49,6 +49,12 @@ func Update(c *gin.Context) {
 
 }
 
-func Quit(c *gin.Context) {
+func Logout(c *gin.Context) {
+	token := c.GetHeader("token")
+	c.Set("token", token)
 
+	res := controller.UserLogout(c)
+	c.Header("Content-Type", "application/json; charset=utf-8")
+	c.Status(http.StatusOK)
+	_, _ = c.Writer.WriteString(res)
 }

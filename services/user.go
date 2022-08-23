@@ -48,3 +48,7 @@ func UserRegister(name, password, email, phone string) error {
 	}
 	return nil
 }
+
+func RemoveToken(token string) error {
+	return cache.Del(token)
+}
