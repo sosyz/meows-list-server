@@ -34,3 +34,7 @@ func packResponse(data interface{}) string {
 	res, _ := json.Marshal(data)
 	return string(res)
 }
+
+func MaskPhone(phone string) string {
+	return phone[:3] + "******" + phone[9:]
+}

@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"sonui.cn/meows-list-server/models"
 	"sonui.cn/meows-list-server/pkg/utils"
 	"sonui.cn/meows-list-server/services"
 )
@@ -41,15 +42,33 @@ func UserLogin(ctx context.Context, opt *LoginParams) string {
 	}
 }
 
-func UserSignup(ctx context.Context, opt *SignupParams) string {
+func UserRegister(ctx context.Context, opt *SignupParams) string {
 	if next, msg := utils.Validation(opt); !next {
 		return utils.ErrorResponse(msg)
 	} else {
-		if err := services.UserSignup(opt.Name, opt.Pass, opt.Email, opt.Phone); err != nil {
+		if err := services.UserRegister(opt.Name, opt.Pass, opt.Email, opt.Phone); err != nil {
 			return utils.ErrorResponse(err.Error())
 		}
 		return utils.SuccessResponse("登录成功", SignupResponse{
 			Message: "注册成功",
 		})
+	}
+}
+
+func UserInfo(ctx context.Context) string {
+	token := ctx.Value("token").(string)
+	if v := services.GetUserByToken(token); v == nil {
+		return utils.ErrorResponse("未登录")
+	} else {
+		// 去除敏感信息
+		user := models.User{
+			Name:  v.Name,
+			Email: v.Email,
+			Phone: v.Phone,
+		}
+		if user.Phone != "" {
+			user.Phone = utils.MaskPhone(user.Phone)
+		}
+		return utils.SuccessResponse("获取用户信息成功", user)
 	}
 }

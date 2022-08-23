@@ -17,13 +17,13 @@ const (
 )
 
 type User struct {
-	gorm.Model
-	Name     string
-	Level    int
-	Email    string
-	Password string
-	Phone    string
-	Status   int
+	gorm.Model `json:"-"`
+	Name       string
+	Level      int
+	Email      string
+	Password   string `json:"-"`
+	Phone      string
+	Status     int `json:"-"`
 }
 
 func GetUserByEmail(email string) (*User, error) {

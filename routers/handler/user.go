@@ -21,13 +21,13 @@ func UserLogin(c *gin.Context) {
 
 }
 
-func Signup(c *gin.Context) {
+func Register(c *gin.Context) {
 	SignupParams := controller.SignupParams{}
 	if err := c.ShouldBind(&SignupParams); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
 	}
-	res := controller.UserSignup(c, &SignupParams)
+	res := controller.UserRegister(c, &SignupParams)
 
 	c.Header("Content-Type", "application/json; charset=utf-8")
 	c.Status(http.StatusOK)
@@ -35,7 +35,14 @@ func Signup(c *gin.Context) {
 }
 
 func Info(c *gin.Context) {
+	// 获取请求头
+	token := c.GetHeader("token")
+	c.Set("token", token)
 
+	res := controller.UserInfo(c)
+	c.Header("Content-Type", "application/json; charset=utf-8")
+	c.Status(http.StatusOK)
+	_, _ = c.Writer.WriteString(res)
 }
 
 func Update(c *gin.Context) {

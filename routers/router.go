@@ -33,9 +33,9 @@ func InitRouter() *gin.Engine {
 		// 登录
 		user.POST("login", handler.UserLogin)
 		// 注册
-		user.POST("signup", handler.Signup)
+		user.POST("register", handler.Register)
 		// 获取账号信息
-		user.GET("/:id/info", handler.Info)
+		user.GET("info", handler.Info)
 		// 设置账号信息
 		user.PUT("set", handler.Update)
 		// 退出登录
