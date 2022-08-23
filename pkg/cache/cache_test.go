@@ -12,7 +12,7 @@ type test struct {
 }
 
 func TestPut(t *testing.T) {
-	Init("127.0.0.1:6379", "", 0)
+	Init("127.0.0.1", "6379", "", 0)
 
 	assertions := assert.New(t)
 	if cache.C == nil {
@@ -31,7 +31,7 @@ func TestPut(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
-	Init("127.0.0.1:6379", "", 0)
+	Init("127.0.0.1", "6379", "", 0)
 
 	assertions := assert.New(t)
 	if cache.C == nil {
