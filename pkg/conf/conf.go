@@ -1,61 +1,79 @@
-package utils
+package conf
 
 import (
 	"fmt"
 	"github.com/spf13/viper"
 	"os"
 	"reflect"
+	"sonui.cn/meows-list-server/pkg/logger"
 	"strings"
 )
 
-var Config *config
-var Logger *logger
-
-func init() {
-	Config = &config{}
-	Logger = &logger{
-		level: LevelInfo,
-	}
-	err := ReadConfig()
-	if err != nil {
-		Logger.Error("Read config failed, err:", err)
-		return
-	}
-	switch Config.RunConfig.LogLevel {
-	case "debug":
-		Logger.level = LevelDebug
-	case "info":
-		Logger.level = LevelInfo
-	case "warn":
-		Logger.level = LevelWaring
-	case "error":
-		Logger.level = LevelError
-	default:
-		Logger.level = LevelInfo
-	}
+type database struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
 }
 
-func ReadConfig() error {
+type run struct {
+	Host     string
+	Port     string
+	LogLevel string
+}
+
+type redis struct {
+	Host     string
+	Port     string
+	Password string
+	Database int
+}
+
+type config struct {
+	Run      run
+	Database database
+	Redis    redis
+}
+
+var Run *run
+var Database *database
+var Redis *redis
+var conf config
+
+func Init(path string) {
+	ReadConfig(path)
+
+	Run = &conf.Run
+	Database = &conf.Database
+	Redis = &conf.Redis
+}
+
+func ReadConfig(path string) {
 	//读取yaml文件
 	v := viper.New()
 	//设置读取的配置文件
 	v.SetConfigName("config")
 	//添加读取的配置文件路径
-	v.AddConfigPath("./")
+	v.AddConfigPath(path)
 	//设置配置文件类型
 	v.SetConfigType("yaml")
 
 	if err := v.ReadInConfig(); err != nil {
 		// 从文件读取配置失败 尝试从环境变量获取
-		Logger.Waring("Read config from env failed, err: %v, try to read from env", err)
+		logger.Waring("Read config from env failed, err: %v, try to read from env", err)
 		//设置环境变量名前缀
-		return ReadConfigFromEnv(Config, "MEOWS")
+		err = ReadConfigFromEnv(conf, "MEOWS")
+		if err != nil {
+			logger.Error("Read config from env failed, err: %v", err)
+		}
 	} else {
-		if err := v.Unmarshal(Config); err != nil {
-			return err
+		if err := v.Unmarshal(&conf); err != nil {
+			logger.Error("unmarshal config failed, err: %v", err)
+		} else {
+			logger.Debug("Read config from file success")
 		}
 	}
-	return nil
 }
 
 // ReadConfigFromEnv 从环境变量读取配置
@@ -79,7 +97,7 @@ func ReadConfigFromEnv(obj interface{}, envPrefix string) error {
 			// 获取环境变量值
 			val := os.Getenv(strings.ToUpper(envPrefix + "_" + f.Name))
 			if val == "" {
-				Logger.Waring("can't read [%s] value", envPrefix+"_"+f.Name)
+				logger.Waring("can't read [%s] value", envPrefix+"_"+f.Name)
 			} else {
 				// 修改其值
 				objValue.Elem().Field(i).SetString(val)

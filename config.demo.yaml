@@ -1,0 +1,10 @@
+dataBaseConfig:
+  Host: localhost
+  Port: 5432
+  User: root
+  Password: root
+  Database: test
+runConfig:
+  Host: 127.0.0.1
+  Port: 8080
+  LogLevel: debug

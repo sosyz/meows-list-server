@@ -2,22 +2,23 @@ package main
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/sirupsen/logrus"
-	"sonui.cn/meows-list-server/pkg/utils"
+	"sonui.cn/meows-list-server/bootstrap"
+	"sonui.cn/meows-list-server/pkg/conf"
+	"sonui.cn/meows-list-server/pkg/logger"
 	"sonui.cn/meows-list-server/routers"
 )
 
 func main() {
 	// 定义日志输出
-	var logLevel logrus.Level
+	bootstrap.Init("./")
 
-	logrus.SetLevel(logLevel)
-
+	gin.DisableConsoleColor()
 	gin.SetMode(gin.ReleaseMode)
+	gin.DefaultWriter = logger.Write()
 	api := routers.InitRouter()
 
-	logrus.Info("start meows-list-server listen on %s...", utils.Config.RunConfig.Host+":"+utils.Config.RunConfig.Port)
-	if err := api.Run(utils.Config.RunConfig.Host + ":" + utils.Config.RunConfig.Port); err != nil {
-		logrus.Error("start meows-list-server error: %v", err)
+	logger.Info("start meows-list-server listen on %s", conf.Run.Host+":"+conf.Run.Port)
+	if err := api.Run(conf.Run.Host + ":" + conf.Run.Port); err != nil {
+		logger.Panic("start meows-list-server error: %v", err)
 	}
 }
