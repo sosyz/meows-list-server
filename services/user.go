@@ -27,7 +27,15 @@ func UserLogin(email, password string) (string, error) {
 	return token, nil
 }
 
-func UserSignup(name, password, email, phone string) error {
+func GetUserByToken(token string) *models.User {
+	user, err := cache.Get[models.User](token)
+	if err != nil {
+		return nil
+	}
+	return user
+}
+
+func UserRegister(name, password, email, phone string) error {
 	user, err := models.GetUserByEmail(email)
 	if err != nil {
 		return err
