@@ -44,3 +44,11 @@ func (r *RedisStore) Get(key string) (string, error) {
 	}
 	return v, nil
 }
+
+func (r *RedisStore) Del(key string) error {
+	ctx := context.Background()
+	if err := r.C.Del(ctx, key).Err(); err != nil {
+		return err
+	}
+	return nil
+}

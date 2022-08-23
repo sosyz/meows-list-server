@@ -47,3 +47,17 @@ func TestGet(t *testing.T) {
 	}
 	assertions.Equal(td, *value)
 }
+
+func TestDel(t *testing.T) {
+	Init("127.0.0.1", "6379", "", 0)
+
+	assertions := assert.New(t)
+	if cache.C == nil {
+		assertions.Error(errors.New("cache is nil"))
+	}
+
+	err := Del("test")
+	if err != nil {
+		assertions.Error(err)
+	}
+}

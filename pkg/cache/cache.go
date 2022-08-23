@@ -37,3 +37,7 @@ func Put(key string, value any, ttl int) error {
 	}
 	return nil
 }
+
+func Del(key string) error {
+	return cache.Del(key)
+}

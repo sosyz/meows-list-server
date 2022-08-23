@@ -38,3 +38,17 @@ func TestRedisStore_Set(t *testing.T) {
 		assertions.Error(err)
 	}
 }
+
+func TestRedisStore_Del(t *testing.T) {
+	assertions := assert.New(t)
+	r := NewRedisStore("127.0.0.1:6379", "", 0)
+
+	if r == nil {
+		assertions.Error(errors.New("NewRedisStore error"))
+	}
+
+	err := r.Del("test")
+	if err != nil {
+		assertions.Error(err)
+	}
+}
