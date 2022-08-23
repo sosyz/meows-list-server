@@ -56,6 +56,7 @@ func UserRegister(ctx context.Context, opt *SignupParams) string {
 }
 
 func UserInfo(ctx context.Context) string {
+	// 获取请求头中的token
 	token := ctx.Value("token").(string)
 	if v := services.GetUserByToken(token); v == nil {
 		return utils.ErrorResponse("未登录")
