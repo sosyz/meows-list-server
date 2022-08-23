@@ -37,7 +37,7 @@ func InitRouter() *gin.Engine {
 		// 获取账号信息
 		user.GET("info", handler.Info)
 		// 设置账号信息
-		user.PUT("set", handler.Update)
+		user.PUT("update", handler.Update)
 		// 退出登录
 		user.GET("logout", handler.Logout)
 	}

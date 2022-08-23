@@ -22,7 +22,7 @@ func UserLogin(c *gin.Context) {
 }
 
 func Register(c *gin.Context) {
-	SignupParams := controller.SignupParams{}
+	SignupParams := controller.RegisterParams{}
 	if err := c.ShouldBind(&SignupParams); err != nil {
 		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
 		return
@@ -46,7 +46,19 @@ func Info(c *gin.Context) {
 }
 
 func Update(c *gin.Context) {
+	token := c.GetHeader("token")
+	c.Set("token", token)
 
+	RegisterParams := controller.UpdateParams{}
+	if err := c.ShouldBind(&RegisterParams); err != nil {
+		c.JSON(http.StatusBadRequest, utils.ErrorResponse(err.Error()))
+		return
+	}
+
+	res := controller.UserUpdate(c, &RegisterParams)
+	c.Header("Content-Type", "application/json; charset=utf-8")
+	c.Status(http.StatusOK)
+	_, _ = c.Writer.WriteString(res)
 }
 
 func Logout(c *gin.Context) {
