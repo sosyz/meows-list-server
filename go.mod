@@ -3,11 +3,11 @@ module sonui.cn/meows-list-server
 go 1.18
 
 require (
-	github.com/astaxie/beego v1.12.3
+	github.com/beego/beego/v2 v2.0.5
 	github.com/gin-gonic/gin v1.8.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/spf13/viper v1.12.0
-	github.com/stretchr/testify v1.7.1
+	github.com/stretchr/testify v1.8.0
 	github.com/tencentyun/scf-go-lib v0.0.0-20211123032342-f972dcd16ff6
 	golang.org/x/crypto v0.0.0-20220411220226-7b82a4e95df4
 	gorm.io/driver/postgres v1.3.9
@@ -41,8 +41,9 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/pelletier/go-toml v1.9.5 // indirect
 	github.com/pelletier/go-toml/v2 v2.0.1 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
+	github.com/shiena/ansicolor v0.0.0-20200904210342-c7312218db18 // indirect
 	github.com/spf13/afero v1.8.2 // indirect
 	github.com/spf13/cast v1.5.0 // indirect
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
@@ -55,5 +56,5 @@ require (
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/ini.v1 v1.66.4 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gopkg.in/yaml.v3 v3.0.0 // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

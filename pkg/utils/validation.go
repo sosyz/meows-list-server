@@ -1,7 +1,7 @@
 package utils
 
 import (
-	"github.com/astaxie/beego/validation"
+	"github.com/beego/beego/v2/core/validation"
 )
 
 func Validation(data interface{}) (bool, string) {
